@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouterOS Queue Monitor</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- 加载屏幕 -->
+<div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-logo">
+            <i class="fas fa-network-wired"></i>
+        </div>
+        <div class="loading-text">RouterOS Monitor</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-status">正在连接到RouterOS...</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-network-wired"></i>
+            <span class="brand-text">RouterOS Monitor</span>
+        </div>
+
+        <div class="nav-controls">
+            <div class="connection-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span class="status-text" id="statusText">连接中...</span>
+            </div>
+
+            <button class="nav-btn" onclick="refreshData()" title="刷新数据">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+
+            <button class="nav-btn" onclick="toggleFullscreen()" title="全屏">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 统计概览 -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalQueues">0</div>
+                    <div class="stat-label">活跃队列</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalUpload">0 Mbps</div>
+                    <div class="stat-label">总上行速率</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalDownload">0 Mbps</div>
+                    <div class="stat-label">总下行速率</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="highUtilization">0</div>
+                    <div class="stat-label">高负载队列</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 控制面板 -->
+    <section class="controls-section">
+        <div class="controls-container">
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label class="filter-label">队列筛选</label>
+                    <div class="custom-select select-with-icon filter-icon">
+                        <select id="queueFilter" onchange="filterQueues()">
+                            <option value="all">🔍 全部队列</option>
+                            <option value="upload">⬆️ 上行队列</option>
+                            <option value="download">⬇️ 下行队列</option>
+                            <option value="high">⚠️ 高负载队列</option>
+                            <option value="normal">✅ 正常队列</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">排序方式</label>
+                    <div class="custom-select select-with-icon sort-icon">
+                        <select id="sortBy" onchange="sortQueues()">
+                            <option value="name">📝 按名称排序</option>
+                            <option value="utilization">📊 按利用率排序</option>
+                            <option value="rate">🚀 按当前速率排序</option>
+                            <option value="bytes">💾 按总流量排序</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">搜索队列</label>
+                    <div class="search-input">
+                        <input type="text" id="searchInput" placeholder="输入队列名称..." onkeyup="searchQueues()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-controls">
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" onclick="switchView('grid')" title="网格视图">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" data-view="list" onclick="switchView('list')" title="列表视图">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+
+                <button class="export-btn" onclick="exportData()" title="导出数据">
+                    <i class="fas fa-download"></i>
+                    <span>导出</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 队列监控区域 -->
+    <section class="queues-section">
+        <div class="section-header">
+            <h2><i class="fas fa-network-wired"></i> 队列监控</h2>
+            <div class="last-update">
+                最后更新: <span id="lastUpdate">--</span>
+            </div>
+        </div>
+
+        <!-- 网格视图 -->
+        <div id="gridView" class="queue-grid">
+            <!-- 队列卡片将在这里动态生成 -->
+        </div>
+
+        <!-- 列表视图 -->
+        <div id="listView" class="queue-list" style="display: none;">
+            <div class="list-header">
+                <div class="list-col">队列名称</div>
+                <div class="list-col">当前速率</div>
+                <div class="list-col">最大限制</div>
+                <div class="list-col">利用率</div>
+                <div class="list-col">状态</div>
+            </div>
+            <div class="list-body" id="listBody">
+                <!-- 列表项将在这里动态生成 -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 通知容器 -->
+<div id="notifications" class="notifications-container"></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
