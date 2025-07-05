@@ -14,7 +14,9 @@
 
 [功能特性](#-功能特性) • [快速开始](#-快速开始) • [部署方式](#-部署方式) • [配置说明](#-配置说明) • [故障排除](#-故障排除)
 
-<div align="center">  <img src="`https://raw.githubusercontent.com/uouuou/routeros-queue-monitor/cafce31688f97bd7afc5cd810d6fda7612036e08/pic.png`" alt="RouterOS Queue Monitor 界面预览" width="800"></div>
+![pic.png](assets/pic.png)
+
+
 
 </div>
 
