@@ -11,8 +11,9 @@ import (
 	"github.com/go-routeros/routeros"
 )
 
+// RouterOSService 管理RouterOS连接和队列统计
 type RouterOSService struct {
-	config config.Config // 修改：使用完整的config而不是子结构
+	config config.Config
 	client *routeros.Client
 }
 
