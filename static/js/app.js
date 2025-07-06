@@ -425,13 +425,6 @@ class QueueMonitor {
         }
     }
 
-    /**
-     * 旧的parseRate方法，保持兼容性
-     */
-    parseRate(rateStr) {
-        return this.parseRateToMbps(rateStr);
-    }
-
     formatBytes(bytes) {
         if (!bytes || bytes === 0) return '0 B';
 
@@ -508,10 +501,6 @@ function sortQueues() {
         window.monitor.sortBy = select.value;
         window.monitor.updateQueueDisplay();
     }
-}
-
-function searchQueues() {
-    // 搜索功能已在事件监听器中实现
 }
 
 function toggleFullscreen() {
