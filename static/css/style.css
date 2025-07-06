@@ -866,7 +866,7 @@ body {
 }
 
 /* 高对比度模式 */
-@media (prefers-contrast: high) {
+@media (prefers-contrast: no-preference) {
     .custom-select select {
         border-width: 2px;
     }
