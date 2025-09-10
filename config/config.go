@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 )
 
 // Config 定义配置结构体
@@ -52,6 +53,14 @@ func Load() *Config {
 	}
 	if password := os.Getenv("ROS_PASSWORD"); password != "" {
 		config.RouterOS.Password = password
+	}
+	if port := os.Getenv("ROS_PORT"); port != "" {
+		config.RouterOS.Port = port
+	}
+	if interval := os.Getenv("MONITOR_INTERVAL"); interval != "" {
+		if val, err := strconv.Atoi(interval); err == nil {
+			config.Monitor.Interval = val
+		}
 	}
 
 	return config

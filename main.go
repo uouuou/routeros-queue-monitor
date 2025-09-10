@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/uouuou/routeros-queue-monitor/config"
-	"github.com/uouuou/routeros-queue-monitor/handlers"
-	"github.com/uouuou/routeros-queue-monitor/services"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/uouuou/routeros-queue-monitor/config"
+	"github.com/uouuou/routeros-queue-monitor/handlers"
+	"github.com/uouuou/routeros-queue-monitor/services"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"

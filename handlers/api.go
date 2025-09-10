@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"github.com/uouuou/routeros-queue-monitor/models"
-	"github.com/uouuou/routeros-queue-monitor/services"
 	"log"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/uouuou/routeros-queue-monitor/models"
+	"github.com/uouuou/routeros-queue-monitor/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"

@@ -2,11 +2,12 @@ package services
 
 import (
 	"fmt"
-	"github.com/uouuou/routeros-queue-monitor/config"
-	"github.com/uouuou/routeros-queue-monitor/models"
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/uouuou/routeros-queue-monitor/config"
+	"github.com/uouuou/routeros-queue-monitor/models"
 
 	"github.com/go-routeros/routeros"
 )
